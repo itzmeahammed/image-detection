@@ -4,7 +4,4 @@ python-dotenv
 pyjwt
 flask-cors
 openai
-# pillow
-# easyocr 
-# opencv-python 
-# numpy
+
