@@ -24,10 +24,6 @@ class CheckAuthorization:
             except jwt.InvalidTokenError:
                 return {"message": "Invalid token"}, 401
 
-            # user_id = decoded_token.get("user_id")
-            # if not user_id:
-            #     return {"message": "Invalid token payload"}, 401
-
             user = User.objects(auth_token=token).first()
             if user:
                 return True
