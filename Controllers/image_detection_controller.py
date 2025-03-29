@@ -6,7 +6,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
-print(os.getenv("OPENAI_API_KEY"))
 
 class ImageDetection():
     def encode_image(image_path):
