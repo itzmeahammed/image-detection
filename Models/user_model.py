@@ -1,4 +1,4 @@
-from mongoengine import Document, StringField,EmailField
+from mongoengine import Document, StringField,EmailField,IntField
 import datetime
 class User(Document):
     username = StringField(required=True)
@@ -7,6 +7,8 @@ class User(Document):
     auth_token = StringField()
     password=StringField(required=True)
     address = StringField()
+    vehicle_no = StringField(unique=True,required=True)
+    fine = IntField(defualt=0)
 
     def update(self, **kwargs):
         self.clean()
@@ -19,6 +21,8 @@ class User(Document):
             "number":self.number if self.number else None,
             "email":self.email if self.email else None,
             "address":self.address if self.address else None,
+            "vehicle_no":self.vehicle_no if self.vehicle_no else None,
+            "fine":self.fine,
         }
 
 

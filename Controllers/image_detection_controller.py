@@ -3,6 +3,8 @@ import base64
 import openai
 from flask import  request, jsonify
 from dotenv import load_dotenv
+import json
+from Models.user_model import User
 
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
@@ -32,7 +34,7 @@ class ImageDetection():
                     {
                         "role": "user",
                         "content": [
-                            {"type": "text", "text": "Analyze the image and check for any traffic rule violations, such as not wearing a helmet, using a mobile phone while driving, or more than two people on a two-wheeler. If violations are found, list them. If a vehicle number plate is visible, extract and return the number. If no violations are found, return 'No violation detected'. If no vehicle number is found, return 'No number found'."},
+                            {"type": f"text", "text": 'Analyze the image and check for any traffic rule violations, such as not wearing a helmet, using a mobile phone while driving, or more than two people on a two-wheeler. If violations are found give it in single string and If a vehicle number plate is visible, extract and return the number in the formate of json {"message":"give all the violations","vehicle_number":"if number found else give null"}. If no violations are found, return {"message":"No violation detected"}. If no vehicle number is found, return {"message":"No number found"}. '},
                             {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{image_base64}"}}
                         ]
                     }
@@ -41,7 +43,17 @@ class ImageDetection():
             )
 
             result = response.choices[0].message.content
-            return jsonify({"result": result})
-
+            try:
+                results = json.loads(result)
+                if 'vehicle_number' in result:
+                    user = User.objects(vehicle_no=results.get('vehicle_number')).first()
+                    if user:
+                        fine = user.fine+800
+                        user.update(fine=fine)
+                        user.save()
+                return jsonify({"result": results}),200
+            except Exception as e:
+                return jsonify({f"Exception Occured {str(e)}": result}),400
+                
         except Exception as e:
             return jsonify({"error": str(e)}), 500
