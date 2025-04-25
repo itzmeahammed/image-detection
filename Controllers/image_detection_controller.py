@@ -48,7 +48,7 @@ class ImageDetection():
                 if 'vehicle_number' in result:
                     user = User.objects(vehicle_no=results.get('vehicle_number')).first()
                     if user:
-                        fine = user.fine+800
+                        fine = (user.fine or 0) + 800 
                         user.update(fine=fine)
                         user.save()
                 return jsonify({"result": results}),200
