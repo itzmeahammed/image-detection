@@ -20,7 +20,7 @@ class User(Document):
             "username": self.username,
             "number":self.number if self.number else None,
             "email":self.email if self.email else None,
-            "address":self.address if self.address else None,
+            # "address":self.address if self.address else None,
             "vehicle_no":self.vehicle_no if self.vehicle_no else None,
             "fine":self.fine,
         }
